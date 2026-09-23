@@ -21,8 +21,9 @@
 .
 ├── backend/           Rails APIバックエンド
 ├── frontend/          Vueフロントエンド
-├── docker-compose.yml MySQL等の起動設定
-└── docs/              要件定義・画面設計・DB設計などのドキュメント
+├── docker-compose.yml MySQL等の起動設定（ローカル開発用）
+├── infra/             AWSインフラ構成（Terraform）
+└── docs/              要件定義・画面設計・DB設計・インフラ設計などのドキュメント
 ```
 
 ## ドキュメント
@@ -33,7 +34,8 @@
 | [docs/functional-requirements.md](docs/functional-requirements.md) | 機能要件・対象外機能・受け入れ基準 |
 | [docs/screen-design.md](docs/screen-design.md) | 画面設計（一覧画面・カレンダー画面のレイアウト） |
 | [docs/database-design.md](docs/database-design.md) | データベース設計（テーブル定義） |
-| [docs/tech-stack.md](docs/tech-stack.md) | 技術スタックと採用バージョン |
+| [docs/tech-stack.md](docs/tech-stack.md) | 技術スタックと採用バージョン、AWSインフラ構成の概要 |
+| [docs/infra-design.md](docs/infra-design.md) | AWSネットワーク構成・Terraform管理範囲・デプロイ手順 |
 
 ## 開発ルール
 
@@ -48,3 +50,6 @@
 - [ ] イベントの編集・削除API・UI
 - [ ] ステータス変更（予定／対応中／完了）
 - [ ] カレンダー画面（月表示）
+- [ ] Terraformによるインフラ構築（VPC・EC2・RDS・ECR）
+- [ ] EC2上でのdocker-compose起動・ECRからのイメージPull
+- [ ] EC2のパブリックIPからのCRUD動作確認

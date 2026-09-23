@@ -42,5 +42,40 @@
 ```
 
 ## 5. 開発環境
-- Docker Composeでフロントエンド・バックエンド・MySQLを起動できる構成とする（TaskManagementのdocker-compose構成を参考にする）
+- ローカル開発ではDocker Composeでフロントエンド・バックエンド・MySQLを起動できる構成とする（TaskManagementのdocker-compose構成を参考にする）
 - バージョンの詳細は今後の実装着手時に確定し、本ドキュメントを更新する
+
+## 6. 本番相当環境（インフラ構成）
+
+第一版のゴールは、EC2のIPアドレスから接続してCRUD処理が正常に行えることとする。
+
+| 項目 | 使用技術 | 補足 |
+|---|---|---|
+| コンテナオーケストレーション | Docker Compose on EC2 | frontend・backendの2コンテナをEC2上のdocker-composeで起動する |
+| コンテナレジストリ | Amazon ECR | frontend用・backend用の2リポジトリを用意する |
+| コンピュート | Amazon EC2（Public Subnet） | 起動時のuser_dataでECRからイメージをPullし、docker-composeで起動する |
+| データベース | Amazon RDS for MySQL（Private Subnet） | EC2のセキュリティグループからのみ接続を許可する |
+| IaC | Terraform | VPC・サブネット・セキュリティグループ・EC2・RDS・ECRなど、インフラ一式をコードで管理する |
+
+### 6.1 構成イメージ
+
+```
+[インターネット]
+   ↓
+[EC2（Public Subnet）]
+   ├─ frontendコンテナ（Nginx配信）
+   └─ backendコンテナ（Rails API）
+        ↓（SG経由でのみ許可）
+   [RDS for MySQL（Private Subnet）]
+
+   ↑ 起動時
+[Amazon ECR]（frontend / backendイメージ）
+```
+
+### 6.2 デプロイフロー（第一版はCI/CDなし・手動）
+1. ローカルでfrontend／backendのDockerイメージをビルドする
+2. `docker push`でECR（frontend用・backend用）にそれぞれpushする
+3. EC2のuser_data（またはSSHでの再実行）でECRからイメージをpullし、docker-composeで起動する
+4. EC2のパブリックIPにアクセスし、CRUD操作が正常に行えることを確認する
+
+CI/CD（GitHub Actionsでのビルド・push・デプロイ自動化）は第一版のスコープ外とし、必要になった段階で別途検討する。
