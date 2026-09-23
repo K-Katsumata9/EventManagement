@@ -1,0 +1,58 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: eventmanagement-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: backend_development
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ppassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: eventmanagement-backend
+    environment:
+      DB_HOST: mysql
+      DB_USERNAME: root
+      DB_PASSWORD: password
+      FRONTEND_ORIGIN: http://localhost:5173
+      RAILS_ENV: development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/rails
+      - backend-bundle:/usr/local/bundle
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: >
+      bash -c "bundle install && ./bin/rails db:prepare && ./bin/rails server -b 0.0.0.0"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: eventmanagement-frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:3000
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  mysql-data:
+  backend-bundle:
+  frontend-node-modules:
