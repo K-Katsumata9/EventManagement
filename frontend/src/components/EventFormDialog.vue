@@ -8,6 +8,7 @@ const props = defineProps<{
   modelValue: boolean
   event: Event | null
   saving: boolean
+  initialDate?: string | null
 }>()
 
 const emit = defineEmits<{
@@ -52,7 +53,7 @@ function resetForm() {
     form.value = {
       title: '',
       description: '',
-      start_date: '',
+      start_date: props.initialDate ?? '',
       end_date: '',
       status: 'scheduled',
     }
@@ -60,7 +61,7 @@ function resetForm() {
 }
 
 watch(
-  () => [props.modelValue, props.event],
+  () => [props.modelValue, props.event, props.initialDate],
   () => {
     if (props.modelValue) resetForm()
   },
