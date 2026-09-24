@@ -60,3 +60,8 @@ docker compose up
 - [ ] Terraformによるインフラ構築（VPC・EC2・RDS・ECR）
 - [ ] EC2上でのdocker-compose起動・ECRからのイメージPull
 - [ ] EC2のパブリックIPからのCRUD動作確認
+
+## 今後の課題（最終フェーズで対応）
+
+- [ ] カレンダー画面に前月・次月への移動ボタンを追加する（現状は当月のみ表示） - [#13](https://github.com/K-Katsumata9/EventManagement/issues/13)
+- [ ] 全体のUI/UX改善（角丸・余白・配色などの見た目の調整） - [#13](https://github.com/K-Katsumata9/EventManagement/issues/13)
