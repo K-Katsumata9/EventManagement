@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     get "health", to: "health#show"
+    resources :events, only: [:index, :show, :create, :update, :destroy]
   end
 
   # Defines the root path route ("/")
