@@ -1,0 +1,9 @@
+# このファイルをコピーして terraform.tfvars を作成し、実際の値を設定してください
+# cp terraform.tfvars.example terraform.tfvars
+
+db_password       = "CHANGE_ME_STRONG_PASSWORD"
+rails_master_key  = "CHANGE_ME_RAILS_MASTER_KEY" # backend/config/master.key の値
+
+# SSHで入りたい場合のみ設定（空文字ならSSHキー未設定）
+# ssh_key_name     = "my-keypair"
+# ssh_allowed_cidr = "203.0.113.10/32"
