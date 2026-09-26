@@ -81,9 +81,12 @@ function handleSubmit() {
 
 <template>
   <v-dialog v-model="isOpen" max-width="480">
-    <v-card :title="isEditMode ? 'イベントを編集' : 'イベントを追加'">
+    <v-card rounded="xl" class="pa-2">
+      <v-card-title class="text-title-large font-weight-bold pt-4">
+        {{ isEditMode ? 'イベントを編集' : 'イベントを追加' }}
+      </v-card-title>
       <v-form @submit.prevent="handleSubmit">
-        <v-card-text>
+        <v-card-text class="d-flex flex-column gap-2">
           <v-text-field
             v-model="form.title"
             label="タイトル"
@@ -107,10 +110,10 @@ function handleSubmit() {
             item-value="value"
           />
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pb-4 px-4">
           <v-spacer />
           <v-btn @click="isOpen = false">キャンセル</v-btn>
-          <v-btn color="primary" type="submit" :loading="saving">保存</v-btn>
+          <v-btn color="primary" variant="flat" type="submit" :loading="saving">保存</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>

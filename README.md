@@ -61,7 +61,7 @@ docker compose up
 - [ ] EC2上でのdocker-compose起動・ECRからのイメージPull
 - [ ] EC2のパブリックIPからのCRUD動作確認
 
-## 今後の課題（最終フェーズで対応）
+## 今後の課題
 
-- [ ] カレンダー画面に前月・次月への移動ボタンを追加する（現状は当月のみ表示） - [#13](https://github.com/K-Katsumata9/EventManagement/issues/13)
-- [ ] 全体のUI/UX改善（角丸・余白・配色などの見た目の調整） - [#13](https://github.com/K-Katsumata9/EventManagement/issues/13)
+- [x] カレンダー画面に前月・次月・今日への移動ボタンを追加する - [#13](https://github.com/K-Katsumata9/EventManagement/issues/13)
+- [x] 全体のUI/UX改善（Indigoテーマ・角丸・余白の調整、Googleカレンダー風のサイドバーレイアウト） - [#13](https://github.com/K-Katsumata9/EventManagement/issues/13)
