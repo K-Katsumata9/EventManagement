@@ -4,9 +4,11 @@ import { useEventStore } from '../stores/events'
 import type { Event, EventStatus } from '../stores/events'
 import type { EventPayload } from '../api/events'
 import { EVENT_STATUS_OPTIONS, statusColor, statusLabel } from '../constants/eventStatus'
+import { useCreateEventDialog } from '../composables/useCreateEventDialog'
 import EventFormDialog from '../components/EventFormDialog.vue'
 
 const eventStore = useEventStore()
+const { isCreateDialogOpen } = useCreateEventDialog()
 
 const statusFilter = ref<EventStatus | null>(null)
 const sortDirection = ref<'asc' | 'desc'>('asc')
@@ -35,11 +37,9 @@ async function reload() {
 
 onMounted(reload)
 watch([statusFilter, sortDirection], reload)
-
-function openCreateDialog() {
-  editingEvent.value = null
-  dialogOpen.value = true
-}
+watch(isCreateDialogOpen, (open, wasOpen) => {
+  if (!open && wasOpen) reload()
+})
 
 function openEditDialog(event: Event) {
   editingEvent.value = event
@@ -87,66 +87,64 @@ function toggleSortDirection() {
 </script>
 
 <template>
-  <v-container>
-    <div class="d-flex align-center justify-space-between mb-4">
-      <h1 class="text-h5">イベント一覧</h1>
-      <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreateDialog">
-        イベントを追加
-      </v-btn>
-    </div>
-
-    <v-alert v-if="eventStore.error" type="error" class="mb-4" closable>
+  <v-container class="py-6" max-width="1100">
+    <v-alert v-if="eventStore.error" type="error" class="mb-4" rounded="lg" closable>
       {{ eventStore.error }}
     </v-alert>
 
-    <v-row class="mb-2" align="center">
-      <v-col cols="12" sm="4">
-        <v-select
-          v-model="statusFilter"
-          label="ステータスで絞り込み"
-          :items="EVENT_STATUS_OPTIONS"
-          item-title="label"
-          item-value="value"
-          clearable
-          density="compact"
-        />
-      </v-col>
-      <v-col cols="12" sm="4">
-        <v-btn variant="text" :prepend-icon="sortIcon" @click="toggleSortDirection">
-          開始日で並び替え
-        </v-btn>
-      </v-col>
-    </v-row>
+    <v-card class="pa-4 mb-4" border>
+      <v-row align="center" no-gutters>
+        <v-col cols="12" sm="4">
+          <v-select
+            v-model="statusFilter"
+            label="ステータスで絞り込み"
+            :items="EVENT_STATUS_OPTIONS"
+            item-title="label"
+            item-value="value"
+            clearable
+            density="compact"
+            hide-details
+          />
+        </v-col>
+        <v-col cols="12" sm="4" class="ml-2">
+          <v-btn variant="text" color="primary" :prepend-icon="sortIcon" @click="toggleSortDirection">
+            開始日で並び替え
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-card>
 
-    <v-data-table
-      :headers="headers"
-      :items="eventStore.events"
-      :loading="eventStore.loading"
-      item-value="id"
-    >
-      <template #item.status="{ item }">
-        <v-select
-          :model-value="item.status"
-          :items="EVENT_STATUS_OPTIONS"
-          item-title="label"
-          item-value="value"
-          density="compact"
-          hide-details
-          variant="plain"
-          @update:model-value="(value) => handleStatusChange(item, value as EventStatus)"
-        >
-          <template #selection="{ item: selected }">
-            <v-chip :color="statusColor(selected.value)" size="small">
-              {{ statusLabel(selected.value) }}
-            </v-chip>
-          </template>
-        </v-select>
-      </template>
-      <template #item.actions="{ item }">
-        <v-btn icon="mdi-pencil" variant="text" size="small" @click="openEditDialog(item)" />
-        <v-btn icon="mdi-delete" variant="text" size="small" @click="confirmDelete(item)" />
-      </template>
-    </v-data-table>
+    <v-card border>
+      <v-data-table
+        :headers="headers"
+        :items="eventStore.events"
+        :loading="eventStore.loading"
+        item-value="id"
+      >
+        <template #item.status="{ item }">
+          <v-select
+            :model-value="item.status"
+            :items="EVENT_STATUS_OPTIONS"
+            item-title="label"
+            item-value="value"
+            density="compact"
+            hide-details
+            variant="plain"
+            @update:model-value="(value) => handleStatusChange(item, value as EventStatus)"
+          >
+            <template #selection="{ item: selected }">
+              <v-chip :color="statusColor(selected.value)" size="small" label>
+                {{ statusLabel(selected.value) }}
+              </v-chip>
+            </template>
+          </v-select>
+        </template>
+        <template #item.actions="{ item }">
+          <v-btn icon="mdi-pencil" variant="text" size="small" @click="openEditDialog(item)" />
+          <v-btn icon="mdi-delete" variant="text" size="small" @click="confirmDelete(item)" />
+        </template>
+      </v-data-table>
+    </v-card>
 
     <EventFormDialog
       v-model="dialogOpen"
@@ -156,12 +154,12 @@ function toggleSortDirection() {
     />
 
     <v-dialog v-model="deleteDialogOpen" max-width="400">
-      <v-card title="イベントを削除しますか？">
+      <v-card title="イベントを削除しますか？" rounded="xl">
         <v-card-text v-if="deleteTarget">「{{ deleteTarget.title }}」を削除します。</v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn @click="deleteDialogOpen = false">キャンセル</v-btn>
-          <v-btn color="error" @click="handleDelete">削除</v-btn>
+          <v-btn color="error" variant="flat" @click="handleDelete">削除</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
