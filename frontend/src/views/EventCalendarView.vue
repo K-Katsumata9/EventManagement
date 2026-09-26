@@ -51,11 +51,12 @@ function goToToday() {
   focus.value = ''
 }
 
-function handleClickDate(_nativeEvent: MouseEvent, dateInfo: { date: string }) {
+function handleClickDate(_nativeEvent: globalThis.Event, dateInfo: { date: string }) {
   openCreateDialog(dateInfo.date)
 }
 
-function handleClickEvent(_nativeEvent: MouseEvent, scope: { event: { raw: Event } }) {
+function handleClickEvent(_nativeEvent: globalThis.Event, scope: { event: { raw?: Event } }) {
+  if (!scope.event.raw) return
   editingEvent.value = scope.event.raw
   editDialogOpen.value = true
 }

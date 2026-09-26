@@ -57,9 +57,9 @@ docker compose up
 - [x] イベントCRUD API（一覧・詳細・作成・更新・削除、ステータス絞り込み・日付順ソート対応）
 - [x] 一覧画面での表示・作成・編集・削除・ステータス変更・絞り込み・並び替え（フロントエンド）
 - [x] カレンダー画面（月表示、イベント色分け、日付/イベントクリックでの作成・編集）
-- [ ] Terraformによるインフラ構築（VPC・EC2・RDS・ECR）
-- [ ] EC2上でのdocker-compose起動・ECRからのイメージPull
-- [ ] EC2のパブリックIPからのCRUD動作確認
+- [x] Terraformによるインフラ構築（VPC・EC2・RDS・ECR）
+- [x] EC2上でのdocker-compose起動・ECRからのイメージPull
+- [x] EC2のパブリックIPからのCRUD動作確認（動作確認後、課金防止のためterraform destroy済み。再構築時はinfra/README.mdの手順を参照）
 
 ## 今後の課題
 
